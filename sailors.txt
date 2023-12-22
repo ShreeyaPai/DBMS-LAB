@@ -1,0 +1,23 @@
+1. select color from boat where bid in (select bid from reserves where sid=(select sid from sailors where sname="Albert"));
+2. select sid from sailors where rating>=8 UNION
+   select sid from reserves where bid=103;
+3.  select sname from sailors where sid not in
+    (select sid from reserves) and sname like "%storm%";
+4. select * from sailors s where not exists
+    (select * from boat b where not exists
+    (select * from reserves r where r.sid=s.sid and r.bid=b.bid));
+5. select sname, age from sailors where age=(select max(age) from sailors);
+6. select bid,avg(age) from boat natural join reserves natural join sailors group by (bid) having count(bid)>=5;
+7. create view boat_rating as
+   (select bname,color from boat natural join reserves natural join sail
+ors where rating=9);
+8.   delimiter //
+     create trigger PreventDelete before delete on boat
+     for each row
+     begin
+     if exists (select sid from reserves r where r.bid=old.bid) then
+     signal sqlstate '45000'
+     set message_text = "Bruh dont";
+     end if;
+     end;//
+     delimiter ;
