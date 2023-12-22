@@ -1,0 +1,33 @@
+1. insert into TextBook values
+     (8,"Shreeya's Life","Pearson","Shreeya");
+insert into Bookadoption values
+    (1,5,8);
+2. select book_title,bookisbn from textbook natural join bookadoption natural join course where course in (select course from textbook natural join bookadoption natural join course group by course having count(course)>2) and dept="CS" order by book_title;
+3. SELECT DISTINCT c.dept
+     FROM Course c
+     WHERE c.dept IN
+     ( SELECT c.dept
+     FROM Course c,BookAdoption b,TextBook t
+     WHERE c.course=b.course
+     AND t.bookIsbn=b.bookIsbn
+     AND t.publisher='PEARSON')
+     AND c.dept NOT IN
+     ( SELECT c.dept
+     FROM Course c, BookAdoption b, TextBook t
+     WHERE c.course=b.course
+     AND t.bookIsbn=b.bookIsbn
+     AND t.publisher!='PEARSON');
+4. select name from student where regno=
+   (select regno from course natural join enroll where marks=(select max(marks) from course natural join enroll where cname="DBMS"));
+5.  create view Enn as
+    select course, marks from enroll where regno="01HF235";
+6. DELIMITER //
+create trigger PreventEnroll before insert on enroll
+for each row
+begin
+if (new.marks<40) then
+signal sqlstate '45000' set message_text="Next time buddy";
+end if;
+end;//
+DELIMITER ;
+insert into 
