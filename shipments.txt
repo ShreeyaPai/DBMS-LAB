@@ -1,0 +1,15 @@
+1.  select order_id,ship_date from Shipments where warehouse_id=2;
+2. select warehouse_id,order_id from Shipments where order_id in (select order_id from Customers natural join Orders where cname="Kumar");
+3. select cname,count(cust_id),avg(order_amt) from orders natural join customers group by(cust_id);
+4. delete from orders where cust_id =(select cust_id from customers where cname="Kumar");
+5.  select item_id from items where unitprice=(select max(unitprice) from items);
+6.  DELIMITER //
+create trigger Calculate after insert on orderitems
+    for each row
+    begin
+    update orders set order_amt=(new.qty*( select distinct unitprice from items natural join orderitems where item_id=new.item_id)) where orders.order_id=new.order_id;
+    end;//
+DELIMITER ;
+7. create view Shipp as
+  (select order_id, ship_date from shipments where warehouse_id=5);
+  
