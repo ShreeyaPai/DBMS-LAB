@@ -1,0 +1,17 @@
+1.  select count(driver_id) from person natural join accident natural join participated where year(accident_date)="2021";
+2. select count(*) from participated where driver_id in (select driver_id from person where driver_name="Smith");
+3. UPDATE participated set damage_amount=99 where reg_no="KA-09-MA-1234";
+4. delete from owns where driver_id=(select driver_id from person where driver_name="Smith") and reg_no=(select reg_no from car where model="Mazda");
+5.UPDATE participated set damage_amount=99 where reg_no="KA-09-MA-1234";
+6.create view YearModel as
+   (select model,c_year from car where reg_no in
+   (select reg_no from participated ));
+7. DELIMITER //
+   create trigger PreventDriver before insert on participated
+   for each row
+   begin
+   if (count(driver_id) from participated natural join accident where driver_id=new.driver_id and year(accident_date)=(select year(accident_date) from accident where report_no=new.report_no))>=2 then
+   signal sqlstate '45000' set message_text="Cant sorry lol";
+end if;
+end;//
+DELIMITER ; 
